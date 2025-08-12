@@ -1,0 +1,63 @@
+:root {
+    --primary: #ffd700;    /* Yellow */
+    --secondary: #1e90ff;  /* Blue */
+    --accent: #4fc3f7;     /* Light Blue */
+    --text: #333;
+    --light: #ffffff;
+    --dark: #343a40;
+    --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #ff9f43 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, #00bfff 100%);
+}
+
+<!-- Add this right after <body> tag -->
+<div id="preloader">
+    <div class="loader">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+</div>
+
+<style>
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--light);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader {
+    display: flex;
+    gap: 1rem;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    animation: bounce 0.5s alternate infinite;
+}
+
+.circle:nth-child(2) {
+    animation-delay: 0.2s;
+    background: var(--gradient-secondary);
+}
+
+.circle:nth-child(3) {
+    animation-delay: 0.4s;
+    background: var(--gradient-primary);
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-20px);
+    }
+}
+</style>

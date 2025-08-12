@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leila Saadli - Professional Nurse Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables for Colors and Themes */
+        :root {
+            --primary: #ffd700;    /* Yellow */
+            --secondary: #1e90ff;  /* Blue */
+            --accent: #4fc3f7;     /* Light Blue */
+            --medical: #e74c3c;    /* Medical Red */
+            --text: #333;
+            --light: #ffffff;
+            --dark: #343a40;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #ff9f43 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, #00bfff 100%);
+            --gradient-medical: linear-gradient(135deg, var(--medical) 0%, #ff6b6b 100%);
+            --bg-light: #f8f9fa;
+            --bg-dark: #1a1a1a;
+            --text-light: #333;
+            --text-dark: #f8f9fa;
+            --card-light: #ffffff;
+            --card-dark: #2c2c2c;
+            --transition-speed: 0.3s;
+            --cursor-color: var(--primary);
+        }
+
+        /* Dark Theme Variables */
+        [data-theme="dark"] {
+            --text: var(--text-dark);
+            --light: var(--card-dark);
+            --bg-light: var(--bg-dark);
+            --card-light: var(--card-dark);
+        }
+
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            color: var(--text);
+            background-color: var(--bg-light);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        /* Custom Cursor */
+        * {
+            cursor: none;
+        }
+
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cursor-color);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: all 0.1s ease;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 215, 0, 0.1);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9998;
+        }
+
+        .cursor.hover {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 215, 0, 0.1);
+            border: none;
+        }
+
+        .cursor.clicked {
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+
+        .cursor-follower.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(255, 215, 0, 0.2);
+        }
+
+        /* Spline 3D Background */
+        .spline-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        spline-viewer {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .circle:nth-child(2) {
+            animation-delay: 0.2s;
+            background-color: var(--secondary);
+        }
+
+        .circle:nth-child(3) {
+            animation-delay: 0.4s;
+            background-color: var(--medical);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--secondary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Header and Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            animation: fadeInDown 1s ease-out;
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color var(--transition-speed);
+        }
+
+        [data-theme="dark"] header {
+            background: rgba(26, 26, 26, 0.8);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--medical);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* Social Media Bar */
+        .social-bar {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .social-bar a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-bar a:hover {
+            transform: scale(1.1);
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            min-height: 80vh;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .hero-content {
+            flex: 1;
+            animation: fadeInLeft 1s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--accent);
+            box-shadow: 0 0 40px rgba(79, 195, 247, 0.6);
+            animation: floatImage 6s ease-in-out infinite;
+            filter: grayscale(30%) contrast(110%);
+            transition: all 0.5s;
+        }
+
+        .hero-image img:hover {
+            filter: grayscale(0%) contrast(120%);
+            transform: scale(1.05);
+        }
+
+        /* Medical Cross Animation */
+        .medical-cross {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            animation: rotate 20s linear infinite;
+        }
+
+        .medical-cross::before,
+        .medical-cross::after {
+            content: '';
+            position: absolute;
+            background-color: var(--medical);
+        }
+
+        .medical-cross::before {
+            width: 100%;
+            height: 20px;
+            top: 40px;
+            left: 0;
+        }
+
+        .medical-cross::after {
+            width: 20px;
+            height: 100%;
+            top: 0;
+            left: 40px;
+        }
+
+        .medical-cross.top-right {
+            top: -50px;
+            right: -50px;
+        }
+
+        .medical-cross.bottom-left {
+            bottom: -50px;
+            left: -50px;
+            animation-direction: reverse;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            height: 1.5em;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-right: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(30, 144, 255, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Medical Button */
+        .btn-medical {
+            background-color: var(--medical);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-medical:hover {
+            background-color: var(--secondary);
+            box-shadow: 0 8px 20px rgba(30, 144, 255, 0.4);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--secondary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+
+        .section-title i {
+            color: var(--medical);
+            margin-right: 10px;
+        }
+
+        /* About Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .about-card {
+            background: var(--card-light);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            border-top: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .about-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .about-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--card-light);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-item:hover::before {
+            opacity: 1;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        /* Timeline Section */
+        .timeline {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            height: 100%;
+            width: 4px;
+            background: var(--primary);
+            opacity: 0.2;
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .timeline-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid var(--primary);
+            z-index: 1;
+            transition: transform 0.3s;
+        }
+
+        .timeline-item:hover::before {
+            transform: scale(1.2);
+        }
+
+        .timeline-content {
+            background: var(--card-light);
+            padding: 1.5rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-content {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-content h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .date {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Enhanced Education Section */
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .education-card {
+            background: var(--card-light);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .education-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .education-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .education-header {
+            background: var(--gradient-secondary);
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .education-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .education-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .education-header .institution {
+            font-size: 1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .education-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .education-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .education-description {
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .education-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .education-grade {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .education-details {
+            color: var(--secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .education-card:hover .education-details {
+            color: var(--primary);
+        }
+
+        /* Skills Section */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .skill {
+            background-color: var(--card-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .skill.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .skill:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-5px) scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        /* Animated Skill Bars */
+        .skill-bars {
+            margin-top: 3rem;
+        }
+
+        .skill-bar {
+            margin-bottom: 2rem;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .skill-percent {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            border-radius: 10px;
+            background: var(--gradient-primary);
+            width: 0;
+            transition: width 1.5s ease;
+        }
+
+        /* Certificates Section */
+        .certificates {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .certificate-card {
+            background-color: var(--card-light);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .certificate-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .certificate-img {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .certificate-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .certificate-card:hover .certificate-img img {
+            transform: scale(1.1);
+        }
+
+        .certificate-content {
+            padding: 1.5rem;
+        }
+
+        .certificate-content h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        /* Gallery Section */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 0 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            aspect-ratio: 1/1;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .gallery-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(30, 144, 255, 0.9), transparent);
+            overflow: hidden;
+            width: 100%;
+            height: 0;
+            transition: .5s ease;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            height: 100%;
+        }
+
+        .gallery-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 2rem;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease 0.2s;
+        }
+
+        .gallery-item:hover .gallery-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+        }
+
+        .lightbox-content {
+            display: block;
+            margin: 60px auto;
+            max-width: 80%;
+            max-height: 80vh;
+            border-radius: 5px;
+            animation: zoom 0.3s;
+        }
+
+        @keyframes zoom {
+            from {transform: scale(0.9); opacity: 0}
+            to {transform: scale(1); opacity: 1}
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: none;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--accent);
+        }
+
+        .caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            text-align: center;
+            color: white;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .prev, .next {
+            cursor: none;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 30px;
+            transition: 0.3s;
+            user-select: none;
+        }
+
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev {
+            left: 0;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: var(--accent);
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-light);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: transparent;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-message {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .form-message.success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .form-message.error {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            background-color: var(--card-light);
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-heartbeat {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--medical);
+            opacity: 0.3;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Back to Top Button */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            cursor: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Visitor Counter */
+        .visitor-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .visitor-counter i {
+            color: var(--primary);
+        }
+
+        /* Return Reminder */
+        .return-reminder {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .return-reminder.show {
+            opacity: 1;
+            visibility: visible;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes floatImage {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                margin-bottom: 3rem;
+            }
+            
+            .description {
+                margin: 0 auto 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .title {
+                font-size: 1.2rem;
+            }
+            
+            .social-bar {
+                left: 15px;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .visitor-counter {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+            
+            .return-reminder {
+                font-size: 0.8rem;
+                padding: 8px 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            section {
+                padding: 3rem 0;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .hero-image img {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .gallery-container {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .cursor, .cursor-follower {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Spline 3D Background -->
+    <div class="spline-background">
+        <spline-viewer url="https://prod.spline.design/YFN1hVXxtPQacm6z/scene.splinecode"></spline-viewer>
+    </div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+        </div>
+    </div>
+
+    <!-- Visitor Counter -->
+    <div class="visitor-counter">
+        <i class="fas fa-eye"></i>
+        <span id="visitor-count">0</span> visitors
+    </div>
+
+    <!-- Return Reminder -->
+    <div class="return-reminder" id="return-reminder">
+        <i class="fas fa-heart"></i>
+        <span>Thanks for visiting! Come back soon for updates.</span>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <i class="fas fa-sun"></i>
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round"></span>
+        </label>
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Social Media Bar -->
+    <div class="social-bar">
+        <a href="https://www.linkedin.com/in/saadli-layla-229332189/" class="linkedin" target="_blank">
+            <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=100023839444819" class="facebook" target="_blank">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.instagram.com/louloulola833/" class="instagram" target="_blank">
+            <i class="fab fa-instagram"></i>
+        </a>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" title="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-user-nurse"></i>
+                Leila Saadli
+            </div>
+            <nav>
+                <div class="nav-links">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#experience" class="nav-link">Experience</a>
+                    <a href="#education" class="nav-link">Education</a>
+                    <a href="#skills" class="nav-link">Skills</a>
+                    <a href="#certificates" class="nav-link">Certificates</a>
+                    <a href="#memories" class="nav-link">Memories</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="medical-cross top-right"></div>
+            <div class="medical-cross bottom-left"></div>
+            <div class="hero-content">
+                <h1>Leila Saadli</h1>
+                <div class="title">
+                    <span id="typing-text"></span>
+                </div>
+                <p class="description">
+                    Dedicated and compassionate nurse with 15+ years of experience in emergency care, 
+                    intensive care units, and clinical settings. Skilled in patient care, quick adaptation, 
+                    and teamwork in diverse healthcare environments.
+                </p>
+                <a href="#contact" class="btn">Contact Me</a>
+                <a href="Leila Saadli Cv.pdf" target="_blank" class="btn btn-medical">Download CV</a>
+            </div>
+            <div class="hero-image">
+                <img src="img/main.jpeg" alt="Leila Saadli">
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about">
+            <h2 class="section-title">
+                <i class="fas fa-user-md"></i>About Me
+            </h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <i class="fas fa-user-md about-icon"></i>
+                    <h3>Professional Profile</h3>
+                    <p>Dedicated nurse with over 15 years of experience in emergency care and intensive care units. My journey in healthcare has been marked by a commitment to excellence and compassionate patient care.</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-heart about-icon"></i>
+                    <h3>My Passion</h3>
+                    <p>I am passionate about providing exceptional healthcare services and making a positive impact in patients' lives. My approach combines technical expertise with genuine care and empathy.</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-star about-icon"></i>
+                    <h3>Core Values</h3>
+                    <p>Excellence in patient care, continuous learning, and professional integrity are the cornerstones of my practice. I believe in collaborative healthcare and evidence-based approaches.</p>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">15+</span>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <div class="stat-label">Patients Cared</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <div class="stat-label">Training Hours</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience">
+            <h2 class="section-title">
+                <i class="fas fa-briefcase"></i>Work Experience
+            </h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Nurse for Extra-Clinical Ventilation</h4>
+                        <div class="date">2025 - Present</div>
+                        <div class="company">PRISSUIT</div>
+                        <p>Specialized in providing ventilation care outside traditional clinical settings.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Helios Hospital Bonn Rhein-Sieg</h4>
+                        <div class="date">2024-2025</div>
+                        <p>Provided comprehensive nursing care in a leading German hospital.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Military Hospital of Bizerte, Emergency Department</h4>
+                        <div class="date">2014-2022</div>
+                        <p>Managed emergency cases, triage, and critical care in a high-pressure environment.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Main Military Teaching Hospital in Tunis, Emergency Department</h4>
+                        <div class="date">2013-2014</div>
+                        <p>Delivered emergency care while participating in teaching programs for new nurses.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Main Military Teaching Hospital in Tunis, Intensive Care Unit</h4>
+                        <div class="date">2012-2013</div>
+                        <p>Provided specialized care for critically ill patients in the ICU.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Military Hospital of Bizerte, Emergency Department</h4>
+                        <div class="date">2011-2012</div>
+                        <p>Emergency care provider with focus on trauma cases.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Main Military Teaching Hospital in Tunis, Neurology Department</h4>
+                        <div class="date">2010-2011</div>
+                        <p>Specialized care for neurology patients including stroke and seizure management.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Military Hospital of Bizerte, Emergency Department</h4>
+                        <div class="date">2005-2010</div>
+                        <p>Began my nursing career in emergency medicine, developing foundational skills.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Education Section -->
+        <section id="education">
+            <h2 class="section-title">
+                <i class="fas fa-graduation-cap"></i>Education
+            </h2>
+            <div class="education-grid">
+                <div class="education-card">
+                    <div class="education-header">
+                        <h3>National Diploma of Applied Bachelor's Degree in Nursing Sciences</h3>
+                        <div class="institution">Military Health School, Tunisia</div>
+                    </div>
+                    <div class="education-body">
+                        <div class="education-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>July 2005</span>
+                        </div>
+                        <div class="education-description">
+                            <p>Comprehensive nursing program covering all aspects of patient care, medical procedures, and healthcare ethics. Specialized training in emergency response and critical care.</p>
+                        </div>
+                        <div class="education-footer">
+                            <div class="education-grade">Excellent</div>
+                            <div class="education-details">
+                                <i class="fas fa-award"></i>
+                                <span>Honors Graduate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="education-card">
+                    <div class="education-header">
+                        <h3>Baccalaureate in Experimental Sciences</h3>
+                        <div class="institution">High School Diploma</div>
+                    </div>
+                    <div class="education-body">
+                        <div class="education-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>June 2001</span>
+                        </div>
+                        <div class="education-description">
+                            <p>Strong foundation in biology, chemistry, and physics that prepared me for a career in healthcare. Focused on scientific methodology and research principles.</p>
+                        </div>
+                        <div class="education-footer">
+                            <div class="education-grade">A+</div>
+                            <div class="education-details">
+                                <i class="fas fa-medal"></i>
+                                <span>Top 5% of Class</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills">
+            <h2 class="section-title">
+                <i class="fas fa-tools"></i>Skills
+            </h2>
+            <div class="skills-container">
+                <div class="skill" style="--skill-index: 1;">Analytical Thinking</div>
+                <div class="skill" style="--skill-index: 2;">Patient Care</div>
+                <div class="skill" style="--skill-index: 3;">Problem-Solving</div>
+                <div class="skill" style="--skill-index: 4;">Time Management</div>
+                <div class="skill" style="--skill-index: 5;">Leadership</div>
+                <div class="skill" style="--skill-index: 6;">Effective Communication</div>
+                <div class="skill" style="--skill-index: 7;">Critical Thinking</div>
+                <div class="skill" style="--skill-index: 8;">Emergency Response</div>
+                <div class="skill" style="--skill-index: 9;">Team Collaboration</div>
+                <div class="skill" style="--skill-index: 10;">Clinical Ventilation</div>
+            </div>
+            
+            <div class="skill-bars">
+                <div class="skill-bar">
+                    <div class="skill-info">
+                        <span class="skill-name">Patient Care</span>
+                        <span class="skill-percent">95%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" data-percent="95"></div>
+                    </div>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-info">
+                        <span class="skill-name">Emergency Response</span>
+                        <span class="skill-percent">90%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" data-percent="90"></div>
+                    </div>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-info">
+                        <span class="skill-name">Clinical Ventilation</span>
+                        <span class="skill-percent">85%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" data-percent="85"></div>
+                    </div>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-info">
+                        <span class="skill-name">Team Collaboration</span>
+                        <span class="skill-percent">98%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" data-percent="98"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certificates Section -->
+        <section id="certificates">
+            <h2 class="section-title">
+                <i class="fas fa-certificate"></i>Certificates & Workshops
+            </h2>
+            <div class="certificates">
+                <div class="certificate-card">
+                    <div class="certificate-img">
+                        <img src="img/Screenshot 2025-08-10 183717.png" alt="Hemodialysis Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h4>Certificate in Hemodialysis</h4>
+                        <p>Completed specialized training in hemodialysis procedures and patient care.</p>
+                    </div>
+                </div>
+                 
+                <div class="certificate-card">
+                    <div class="certificate-img">
+                        <img src="img/certif 1.png" alt="Safety Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h4>Safety in Nursing Workplace</h4>
+                        <p>Attended the 4th Scientific Day of the Tunisian Nurses Association on workplace safety.</p>
+                    </div>
+                </div>
+                
+                <div class="certificate-card">
+                    <div class="certificate-img">
+                        <img src="img/certif3.png" alt="Ventilation Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h4>Extra-Clinical Ventilation Certification</h4>
+                        <p>Certified nurse for providing ventilation care outside traditional clinical settings.</p>
+                    </div>
+                </div>
+                <div class="certificate-card">
+                    <div class="certificate-img">
+                        <img src="img/certif2.png" alt="Ventilation Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h4>National Diploma of Applied Bachelor's Degree in Nursing Sciences</h4>
+                        <p>Higher Institute of Military Health</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Languages Section -->
+        <section id="languages">
+            <h2 class="section-title">
+                <i class="fas fa-language"></i>Languages
+            </h2>
+            <div class="profile-card">
+                <div class="skills-container">
+                    <div class="skill">Arabic: Native</div>
+                    <div class="skill">German: B2</div>
+                    <div class="skill">French: Fluent</div>
+                    <div class="skill">English: Proficient</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memories Gallery Section -->
+        <section id="memories">
+            <h2 class="section-title">
+                <i class="fas fa-images"></i>Work Memories
+            </h2>
+            <div class="gallery-container">
+                <div class="gallery-item">
+                    <img src="img/img1.png" alt="Work memory 1" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-text">Team Collaboration</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img/img2.jpeg" alt="Work memory 2" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-text">Patient Care</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img/img3.jpeg" alt="Work memory 3" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-text">Training Session</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img/img4.jpeg" alt="Work memory 4" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-text">Emergency Response</div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Lightbox Modal -->
+            <div id="lightbox" class="lightbox">
+                <span class="close-btn">&times;</span>
+                <img class="lightbox-content" id="lightbox-img">
+                <div class="caption" id="caption"></div>
+                <a class="prev">&#10094;</a>
+                <a class="next">&#10095;</a>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact">
+            <h2 class="section-title">
+                <i class="fas fa-envelope"></i>Contact Me
+            </h2>
+            <div class="contact-form">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-medical">Send Message</button>
+                    <div class="form-message" id="form-message"></div>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="footer-heartbeat"></div>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/saadli-layla-229332189/" class="linkedin" target="_blank">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=100023839444819" class="facebook" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/louloulola833/" class="instagram" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            <p>&copy; 2024 Leila Saadli. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.45/build/spline-viewer.js"></script>
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('clicked');
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('clicked');
+        });
+
+        // Add hover effect to interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .btn, .certificate-card, .gallery-item, .skill, .about-card, .education-card, .stat-item');
+        
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+                cursorFollower.classList.add('hover');
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+                cursorFollower.classList.remove('hover');
+            });
+        });
+
+        // Typing Effect
+        class TypeWriter {
+            constructor(txtElement, words, wait = 3000) {
+                this.txtElement = txtElement;
+                this.words = words;
+                this.txt = '';
+                this.wordIndex = 0;
+                this.wait = parseInt(wait, 10);
+                this.type();
+                this.isDeleting = false;
+            }
+
+            type() {
+                // Current index of word
+                const current = this.wordIndex % this.words.length;
+                // Get full text of current word
+                const fullTxt = this.words[current];
+
+                // Check if deleting
+                if (this.isDeleting) {
+                    // Remove char
+                    this.txt = fullTxt.substring(0, this.txt.length - 1);
+                } else {
+                    // Add char
+                    this.txt = fullTxt.substring(0, this.txt.length + 1);
+                }
+
+                // Insert txt into element
+                this.txtElement.innerHTML = `<span class="txt">${this.txt}</span>`;
+
+                // Initial Type Speed
+                let typeSpeed = 100;
+
+                if (this.isDeleting) {
+                    typeSpeed /= 2;
+                }
+
+                // If word is complete
+                if (!this.isDeleting && this.txt === fullTxt) {
+                    // Make pause at end
+                    typeSpeed = this.wait;
+                    // Set delete to true
+                    this.isDeleting = true;
+                } else if (this.isDeleting && this.txt === '') {
+                    this.isDeleting = false;
+                    // Move to next word
+                    this.wordIndex++;
+                    // Pause before start typing
+                    typeSpeed = 500;
+                }
+
+                setTimeout(() => this.type(), typeSpeed);
+            }
+        }
+
+        // Initialize Typing Effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const txtElement = document.getElementById('typing-text');
+            const words = ['Experienced Nurse Specialist', 'Healthcare Professional', 'Patient Care Advocate'];
+            new TypeWriter(txtElement, words, 2000);
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Check for saved theme preference
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+            themeToggle.checked = true;
+        }
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Back to Top Button
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Gallery Lightbox
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const caption = document.getElementById('caption');
+        const closeBtn = document.querySelector('.close-btn');
+        const prevBtn = document.querySelector('.prev');
+        const nextBtn = document.querySelector('.next');
+        
+        let currentIndex = 0;
+        const images = [];
+        const captions = [];
+        
+        // Prepare images and captions
+        galleryItems.forEach((item, index) => {
+            const img = item.querySelector('img');
+            const text = item.querySelector('.gallery-text').textContent;
+            
+            images.push(img.src);
+            captions.push(text);
+            
+            item.addEventListener('click', () => {
+                currentIndex = index;
+                openLightbox();
+            });
+        });
+        
+        function openLightbox() {
+            lightbox.style.display = 'block';
+            lightboxImg.src = images[currentIndex];
+            caption.textContent = captions[currentIndex];
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        function navigate(direction) {
+            currentIndex += direction;
+            
+            if (currentIndex >= images.length) {
+                currentIndex = 0;
+            } else if (currentIndex < 0) {
+                currentIndex = images.length - 1;
+            }
+            
+            lightboxImg.src = images[currentIndex];
+            caption.textContent = captions[currentIndex];
+            
+            // Add animation
+            lightboxImg.style.animation = 'none';
+            setTimeout(() => {
+                lightboxImg.style.animation = 'zoom 0.3s';
+            }, 10);
+        }
+        
+        // Event listeners
+        closeBtn.addEventListener('click', closeLightbox);
+        prevBtn.addEventListener('click', () => navigate(-1));
+        nextBtn.addEventListener('click', () => navigate(1));
+        
+        // Close when clicking outside image
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.style.display === 'block') {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === 'ArrowLeft') {
+                    navigate(-1);
+                } else if (e.key === 'ArrowRight') {
+                    navigate(1);
+                }
+            }
+        });
+
+        // Contact Form Validation
+        const contactForm = document.getElementById('contact-form');
+        const formMessage = document.getElementById('form-message');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form fields
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            // Simple validation
+            if (name === '' || email === '' || subject === '' || message === '') {
+                showFormMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showFormMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // If validation passes
+            showFormMessage('Your message has been sent successfully!', 'success');
+            contactForm.reset();
+        });
+
+        function showFormMessage(message, type) {
+            formMessage.textContent = message;
+            formMessage.className = `form-message ${type}`;
+            formMessage.style.display = 'block';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                formMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Scroll Reveal Animation
+        const animatedElements = document.querySelectorAll('section, .timeline-item, .skill, .certificate-card, .gallery-item, .stat-item, .education-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    
+                    // Animate skill bars when visible
+                    if (entry.target.classList.contains('skill-bars')) {
+                        const skillBars = entry.target.querySelectorAll('.progress');
+                        skillBars.forEach(bar => {
+                            const percent = bar.getAttribute('data-percent');
+                            bar.style.width = `${percent}%`;
+                        });
+                    }
+                    
+                    // Animate stat numbers
+                    if (entry.target.classList.contains('stats-grid')) {
+                        animateNumbers();
+                    }
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Animate Numbers Function
+        function animateNumbers() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.textContent);
+                let current = 0;
+                const increment = target / 50;
+                
+                const updateCount = () => {
+                    if(current < target) {
+                        current += increment;
+                        stat.textContent = Math.ceil(current) + '+';
+                        setTimeout(updateCount, 20);
+                    } else {
+                        stat.textContent = target + '+';
+                    }
+                }
+                
+                updateCount();
+            });
+        }
+
+        // Preloader
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 1000);
+        });
+
+        // Update Active Navigation Link on Scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            const scrollPosition = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Visitor Counter
+        function updateVisitorCounter() {
+            let count = localStorage.getItem('visitorCount');
+            
+            if (count === null) {
+                count = 1;
+            } else {
+                count = parseInt(count) + 1;
+            }
+            
+            localStorage.setItem('visitorCount', count);
+            document.getElementById('visitor-count').textContent = count;
+        }
+
+        // Initialize visitor counter
+        updateVisitorCounter();
+
+        // Return Reminder
+        function showReturnReminder() {
+            const lastVisit = localStorage.getItem('lastVisit');
+            const now = new Date().getTime();
+            
+            // Show reminder if it's been more than 7 days since last visit
+            if (lastVisit && (now - lastVisit > 7 * 24 * 60 * 60 * 1000)) {
+                const reminder = document.getElementById('return-reminder');
+                reminder.classList.add('show');
+                
+                // Hide reminder after 10 seconds
+                setTimeout(() => {
+                    reminder.classList.remove('show');
+                }, 10000);
+            }
+            
+            // Update last visit time
+            localStorage.setItem('lastVisit', now);
+        }
+
+        // Show return reminder on page load
+        showReturnReminder();
+
+        // Remove Spline logo
+        window.onload = function() {
+            const shadowRoot = document.querySelector('spline-viewer').shadowRoot;
+            if (shadowRoot) {
+                const logo = shadowRoot.querySelector('#logo');
+                if (logo) logo.remove();
+            }
+        };
+    </script>
+</body>
+</html>
